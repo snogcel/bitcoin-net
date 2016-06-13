@@ -50,8 +50,8 @@ class Peer extends EventEmitter {
     super()
 
     this.params = params
-    this.protocolVersion = params.protocolVersion || 70012
-    this.minimumVersion = params.minimumVersion || 70001
+    this.protocolVersion = params.protocolVersion || 70103
+    this.minimumVersion = params.minimumVersion || 70103
     this.requireBloom = opts.requireBloom && true
     this.userAgent = opts.userAgent
     if (!opts.userAgent) {

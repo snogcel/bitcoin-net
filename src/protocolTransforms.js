@@ -1,9 +1,9 @@
 var through = require('through2').obj
 var BN = require('bn.js')
 var reverse = require('buffer-reverse')
-var bitcoinjs = require('bitcoinjs-lib')
-var Block = bitcoinjs.Block
-var Transaction = bitcoinjs.Transaction
+var bitcore = require('bitcore-lib-dash');
+var Block = bitcore.BlockHeader;
+var Transaction = bitcore.Transaction;
 
 var fromTransaction = (tx) => {
   var output = Object.assign({}, tx)
@@ -25,10 +25,13 @@ var fromTransaction = (tx) => {
   })
   return output
 }
-var fromHeader = (header) => ({
-  numTransactions: header.numTransactions || 0,
-  header: Object.assign({}, header)
-})
+var fromHeader = function fromHeader(header) {
+  var blockHeader = new Block(header);
+  return {
+    numTransactions: header.numTransactions || 0,
+    header: blockHeader
+  };
+};
 var toTransaction = (raw) => {
   var tx = Object.assign(new Transaction(), raw)
   for (var output of tx.outs) {
@@ -36,7 +39,12 @@ var toTransaction = (raw) => {
   }
   return tx
 }
-var toHeader = (header) => Object.assign(new Block(), header)
+var toHeader = function toHeader(header) {
+  header.time = header.timestamp; // TODO: review cross compatibility w/ bitcore-lib and bitcoinjs. This code allows for proper construction of header using bitcore-lib.
+  var blockHeader = new Block(header);
+  delete blockHeader.timestamp;
+  return blockHeader;
+}
 
 var encodeTransforms = {
   'tx': fromTransaction,
