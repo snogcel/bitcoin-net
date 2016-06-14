@@ -40,9 +40,7 @@ var toTransaction = (raw) => {
   return tx
 }
 var toHeader = function toHeader(header) {
-  header.time = header.timestamp; // TODO: review cross compatibility w/ bitcore-lib and bitcoinjs. This code allows for proper construction of header using bitcore-lib.
   var blockHeader = new Block(header);
-  delete blockHeader.timestamp;
   return blockHeader;
 }
 
